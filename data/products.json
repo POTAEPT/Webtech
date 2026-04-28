@@ -1,0 +1,182 @@
+[
+  {
+    "id": 1,
+    "name": "Modern Chair",
+    "price": 180,
+    "mainImage": "img/product-img/pro-big-1.jpg",
+    "hoverImage": "img/product-img/pro-big-1.jpg.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 2,
+    "name": "Minimalist Plant Stand",
+    "price": 45,
+    "mainImage": "img/product-img/pro-big-1.jpg.jpg",
+    "hoverImage": "img/product-img/pro-big-1.jpg.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 3,
+    "name": "Lounge Sofa",
+    "price": 450,
+    "mainImage": "img/product-img/product3.jpg",
+    "hoverImage": "img/product-img/product4.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 4,
+    "name": "Wood Coffee Table",
+    "price": 220,
+    "mainImage": "img/product-img/product4.jpg",
+    "hoverImage": "img/product-img/product5.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 5,
+    "name": "Ceramic Table Lamp",
+    "price": 85,
+    "mainImage": "img/product-img/product5.jpg",
+    "hoverImage": "img/product-img/product6.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 6,
+    "name": "Velvet Accent Chair",
+    "price": 210,
+    "mainImage": "img/product-img/product6.jpg",
+    "hoverImage": "img/product-img/product1.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 7,
+    "name": "Geometric Rug",
+    "price": 150,
+    "mainImage": "img/product-img/product7.jpg",
+    "hoverImage": "img/product-img/product8.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 8,
+    "name": "Industrial Dining Table",
+    "price": 600,
+    "mainImage": "img/product-img/product8.jpg",
+    "hoverImage": "img/product-img/product9.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 9,
+    "name": "Leather Ottoman",
+    "price": 130,
+    "mainImage": "img/product-img/product9.jpg",
+    "hoverImage": "img/product-img/product10.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 10,
+    "name": "Floating Bookshelf",
+    "price": 65,
+    "mainImage": "img/product-img/product10.jpg",
+    "hoverImage": "img/product-img/product11.jpg",
+    "productUrl": "product-details.html",
+    "rating": 3
+  },
+  {
+    "id": 11,
+    "name": "Brass Floor Lamp",
+    "price": 140,
+    "mainImage": "img/product-img/product11.jpg",
+    "hoverImage": "img/product-img/product12.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 12,
+    "name": "Woven Basket Set",
+    "price": 55,
+    "mainImage": "img/product-img/product12.jpg",
+    "hoverImage": "img/product-img/product13.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 13,
+    "name": "Oak Nightstand",
+    "price": 125,
+    "mainImage": "img/product-img/product13.jpg",
+    "hoverImage": "img/product-img/product14.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 14,
+    "name": "Ergonomic Office Chair",
+    "price": 280,
+    "mainImage": "img/product-img/product14.jpg",
+    "hoverImage": "img/product-img/product15.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 15,
+    "name": "Upholstered Bed Frame",
+    "price": 750,
+    "mainImage": "img/product-img/product15.jpg",
+    "hoverImage": "img/product-img/product16.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 16,
+    "name": "Outdoor Patio Set",
+    "price": 890,
+    "mainImage": "img/product-img/product16.jpg",
+    "hoverImage": "img/product-img/product17.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 17,
+    "name": "Rattan Armchair",
+    "price": 195,
+    "mainImage": "img/product-img/product17.jpg",
+    "hoverImage": "img/product-img/product18.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 18,
+    "name": "18Mid-Century Desk",
+    "price": 340,
+    "mainImage": "img/product-img/product18.jpg",
+    "hoverImage": "img/product-img/product19.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+  {
+    "id": 19,
+    "name": "19Glass Display Cabinet",
+    "price": 420,
+    "mainImage": "img/product-img/product19.jpg",
+    "hoverImage": "img/product-img/product20.jpg",
+    "productUrl": "product-details.html",
+    "rating": 4
+  },
+  {
+    "id": 20,
+    "name": "20Abstract Wall Art",
+    "price": 95,
+    "mainImage": "img/product-img/pro-big-1.jpg",
+    "hoverImage": "img/product-img/pro-big-1.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  }
+]
