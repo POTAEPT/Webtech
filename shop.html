@@ -328,128 +328,138 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         </div>
     </footer>
     <!-- ##### Footer Area End ##### -->
-
-    <!-- ##### jQuery (Necessary for All JavaScript Plugins) ##### -->
-    <script src="js/jquery/jquery-2.2.4.min.js"></script>
-    <!-- Popper js -->
+<script src="js/jquery/jquery-2.2.4.min.js"></script>
     <script src="js/popper.min.js"></script>
-    <!-- Bootstrap js -->
     <script src="js/bootstrap.min.js"></script>
-    <!-- Plugins js -->
     <script src="js/plugins.js"></script>
-    <!-- Active js -->
     <script src="js/active.js"></script>
 
     <script>
         /**
- * E-commerce Product Fetch and Render Flow
- * Sequence: requestProducts() -> fetch(path-to-json) -> renderUI(data)
- */
-
-// 1. MAIN CONTROLLER: requestProducts()
-// This function initiates the sequence. It is responsible for calling the fetch 
-// operation and then passing the resulting data to the UI renderer.
-async function requestProducts() {
-    try {
-        // Step A: The Fetch Request
-        // We use the Fetch API to request the JSON file from the server.
-        // Replace 'products.json' with your actual file path or API endpoint.
-        const response = await fetch('data/products.json'); 
+         * E-commerce Product Fetch, Render, and Filter Flow
+         */
         
-        // Step B: Error Checking
-        // fetch() only throws an error on network failure. We must manually check
-        // if the HTTP response status is OK (200-299).
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        // Step C: Parse the Data
-        // Convert the raw HTTP response body into a usable JavaScript Array/Object.
-        const productData = await response.json();
-
-        // Step D: Trigger the UI Render
-        // Pass the successfully parsed JSON data to the renderUI function.
-        renderUI(productData);
-
-    } catch (error) {
-        // Basic Error Catch
-        // If the fetch fails, the network drops, or the JSON is invalid, the flow jumps here.
-        console.error("Failed to load product data:", error);
+        let allProducts = []; 
+        let currentKeyword = '';
+        let currentCategory = ''; 
         
-        // Gracefully notify the user on the front-end
-        const container = document.getElementById('product-container');
-        if (container) {
-            container.innerHTML = `
-                <div class="col-12">
-                    <p class="text-danger">Sorry, we couldn't load the products at this time. Please try again later.</p>
-                </div>`;
+        async function requestProducts() {
+            try {
+                // อ้างอิงจากไฟล์ products.json ที่อยู่ระดับเดียวกับ shop.html
+                const response = await fetch('/data/products.json'); 
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            
+                allProducts = await response.json();
+                renderUI(allProducts);
+                initializeFilters();
+            
+            } catch (error) {
+                console.error("Failed to load product data:", error);
+                document.getElementById('product-container').innerHTML = `
+                    <div class="col-12">
+                        <p class="text-danger text-center mt-5">Sorry, we couldn't load the products at this time. Please try again later.</p>
+                    </div>`;
+            }
         }
-    }
-}
-
-// 2. VIEW RENDERER: renderUI(data)
-// This function receives the parsed JSON array and maps it to the HTML structure.
-function renderUI(products) {
-    // Target the specific grid container defined in your HTML
-    const container = document.getElementById('product-container');
-    
-    // Create an empty string to hold our generated HTML blocks
-    let htmlContent = '';
-
-    // Loop through each product object in the JSON array
-    products.forEach(product => {
         
-        // Dynamically generate the star rating HTML based on the product.rating value
-        let starsHtml = '';
-        for (let i = 0; i < product.rating; i++) {
-            starsHtml += '<i class="fa fa-star" aria-hidden="true"></i>\n';
+        function applyFilters() {
+            const filteredProducts = allProducts.filter(product => {
+                const matchKeyword = product.name.toLowerCase().includes(currentKeyword.toLowerCase());
+                const matchCategory = currentCategory === '' || currentCategory === 'all' || 
+                                      (product.category && product.category.toLowerCase() === currentCategory.toLowerCase());
+            
+                return matchKeyword && matchCategory;
+            });
+        
+            renderUI(filteredProducts);
         }
-
-        // Construct the HTML block for a single product using template literals (${})
-        // This maps the JSON keys (product.price, product.name, etc.) to the DOM layout
-        htmlContent += `
-            <div class="col-12 col-sm-6 col-md-12 col-xl-6">
-                <div class="single-product-wrapper">
-                    <div class="product-img">
-                        <img src="${product.mainImage}" alt="${product.name}">
-                        <img class="hover-img" src="${product.hoverImage}" alt="${product.name} Hover">
-                    </div>
-
-                    <div class="product-description d-flex align-items-center justify-content-between">
-                        <div class="product-meta-data">
-                            <div class="line"></div>
-                            <p class="product-price">$${product.price}</p>
-                            <a href="${product.productUrl}">
-                                <h6>${product.name}</h6>
-                            </a>
-                        </div>
-                        <div class="ratings-cart text-right">
-                            <div class="ratings">
-                                ${starsHtml}
+        
+        function initializeFilters() {
+            const searchInput = document.getElementById('search');
+            const categoryLinks = document.querySelectorAll('.catagories-menu ul li a');
+        
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    currentKeyword = e.target.value;
+                    applyFilters();
+                });
+            }
+        
+            categoryLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); 
+                
+                    document.querySelectorAll('.catagories-menu ul li').forEach(li => li.classList.remove('active'));
+                    e.target.parentElement.classList.add('active');
+                
+                    currentCategory = e.target.innerText.trim();
+                    
+                    if(currentCategory.toLowerCase() === 'all') {
+                        currentCategory = '';
+                    }
+                
+                    applyFilters();
+                });
+            });
+        }
+        
+        function renderUI(products) {
+            const container = document.getElementById('product-container');
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 mt-5 text-center">
+                        <i class="fa fa-search fa-3x mb-3 text-muted"></i>
+                        <h4 class="text-muted">Product not found</h4>
+                        <p>We couldn't find anything matching your search criteria.</p>
+                    </div>`;
+                return; 
+            }
+        
+            let htmlContent = '';
+            products.forEach(product => {
+                let starsHtml = '';
+                for (let i = 0; i < product.rating; i++) {
+                    starsHtml += '<i class="fa fa-star" aria-hidden="true"></i>\n';
+                }
+            
+                htmlContent += `
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                        <div class="single-product-wrapper">
+                            <div class="product-img">
+                                <img src="${product.mainImage}" alt="${product.name}">
+                                <img class="hover-img" src="${product.hoverImage}" alt="${product.name} Hover">
                             </div>
-                            <div class="cart">
-                                <a href="cart.html" data-toggle="tooltip" data-placement="left" title="Add to Cart">
-                                    <img src="img/core-img/cart.png" alt="Cart Icon">
-                                </a>
+                            <div class="product-description d-flex align-items-center justify-content-between">
+                                <div class="product-meta-data">
+                                    <div class="line"></div>
+                                    <p class="product-price">$${product.price}</p>
+                                    <a href="${product.productUrl}">
+                                        <h6>${product.name}</h6>
+                                    </a>
+                                </div>
+                                <div class="ratings-cart text-right">
+                                    <div class="ratings">
+                                        ${starsHtml}
+                                    </div>
+                                    <div class="cart">
+                                        <a href="cart.html" data-toggle="tooltip" data-placement="left" title="Add to Cart">
+                                            <img src="img/core-img/cart.png" alt="Cart Icon">
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        `;
-    });
-
-    // Update the DOM exactly once to improve performance, rather than updating on every loop iteration
-    container.innerHTML = htmlContent;
-}
-
-// 3. INITIALIZATION
-// Ensure the DOM is fully loaded before trying to target #product-container and run the sequence.
-document.addEventListener('DOMContentLoaded', () => {
-    requestProducts();
-});
+                `;
+            });
+        
+            container.innerHTML = htmlContent;
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            requestProducts();
+        });
     </script>
-
 </body>
-
 </html>
