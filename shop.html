@@ -443,8 +443,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                                         ${starsHtml}
                                     </div>
                                     <div class="cart">
-                                        <a href="cart.html" data-toggle="tooltip" data-placement="left" title="Add to Cart">
-                                            <img src="img/core-img/cart.png" alt="Cart Icon">
+                                        <a href="#" class="add-to-cart" data-id="${product.id}" data-toggle="tooltip" data-placement="left" title="Add to Cart">
+                                            <img src="img/core-img/cart.png" alt="Cart Icon" >
                                         </a>
                                     </div>
                                 </div>
@@ -460,6 +460,50 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         document.addEventListener('DOMContentLoaded', () => {
             requestProducts();
         });
-    </script>
+
+        // 2. ดึง Parent Element ที่ครอบสินค้าทั้งหมดเอาไว้
+        const catalogContainer = document.getElementById('product-container'); 
+
+        // 3. Event Listener: สร้าง Event Delegation
+        catalogContainer.addEventListener('click', function(e) {
+
+            // ทำไมต้องใช้ .closest() ? 
+            // เพราะเวลาเต้คลิกจริงๆ เต้เบราว์เซอร์อาจจะมองว่าเต้คลิกโดนแท็ก <img> ที่อยู่ข้างใน <a>
+            // .closest() จะสั่งให้มันวิ่งหา Element ตัวมันเอง หรือพ่อแม่ของมัน ที่มีคลาส .add-to-cart
+            const addToCartBtn = e.target.closest('.add-to-cart');
+            
+            // ถ้าการคลิกนั้น "อยู่ใน" หรือ "โดน" ปุ่ม .add-to-cart จริงๆ จะเข้าเงื่อนไขนี้
+            if (addToCartBtn) {
+                e.preventDefault(); // ป้องกันไม่ให้แท็ก <a> พาเราเด้งกลับไปบนสุดของหน้า หรือรีเฟรชหน้าเว็บ
+                
+                // ดึงค่า ID ออกมาจาก Attribute: data-id
+                // สังเกตว่าใน HTML เราเขียน data-id แต่ใน JS เราเรียกผ่าน dataset.id
+                const productId = addToCartBtn.dataset.id;
+                
+                // ส่ง ID ที่ได้ไปให้ Handler Function จัดการต่อ
+                handleAddToCart(productId);
+            }
+        });
+
+        // 4. Handler Function: จัดการ Logic การเพิ่มของลงตะกร้า
+    //     function handleAddToCart(id) {
+    //         // เช็คว่าใน Object cart มี id นี้อยู่หรือยัง
+    //         if (cart[id]) {
+    //             // ถ้ามีแล้ว ให้บวกจำนวนเพิ่มเข้าไปอีก 1
+    //             cart[id] += 1;
+    //         } else {
+    //             // ถ้าเพิ่งกดใส่ตะกร้าครั้งแรก ให้เซ็ตจำนวนเริ่มต้นเป็น 1
+    //             cart[id] = 1;
+    //         }
+
+    //         console.log("Cart Updated:", cart);
+
+    //         // (Optional) เต้สามารถเรียกฟังก์ชัน Update UI ตัวเลขตะกร้าเล็กๆ มุมขวาบนได้ที่นี่ครับ
+    //         // เช่น updateCartIconCount();
+    //     }
+    // </script>
+
+    <script src="js/cartService.js"></script>
+
 </body>
 </html>
