@@ -191,7 +191,17 @@
   },
   {
     "id": 20,
-    "name": "Abstract Wall Art",
+    "name": "20Abstract Wall Art",
+    "price": 95,
+    "category": "Home Deco",
+    "mainImage": "img/product-img/product1.jpg",
+    "hoverImage": "img/product-img/product2.jpg",
+    "productUrl": "product-details.html",
+    "rating": 5
+  },
+    {
+    "id": 21,
+    "name": "21Abstract Wall Art",
     "price": 95,
     "category": "Home Deco",
     "mainImage": "img/product-img/product1.jpg",
