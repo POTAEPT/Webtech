@@ -2,20 +2,14 @@
 const productService = require('../services/productService');
 
 /**
- * Handler สำหรับ GET /api/products
+ * 1. ฟังก์ชันดั้งเดิม: ดึงข้อมูลสินค้า "ทั้งหมด"
  */
 async function getProducts(req, res) {
     try {
-        // สั่งให้ Service ไปดึงข้อมูลมา
         const products = await productService.getAllProducts();
-        
-        // ถ้าสำเร็จ ส่ง HTTP Status 200 (OK) พร้อมข้อมูล JSON แบบตรงไปตรงมา
         res.status(200).json(products);
     } catch (error) {
         console.error("Error in getProducts controller:", error.message);
-        
-        // สไตล์ DevSecOps: ถ้ามี Error ข้างหลังบ้าน เราจะไม่ส่ง Error Stack กลับไปให้ Client เห็น
-        // แต่เราจะส่งข้อความแบบกว้างๆ พร้อม Status 500 (Internal Server Error)
         res.status(500).json({ 
             success: false, 
             message: 'Server Error: Unable to retrieve products.' 
@@ -23,6 +17,45 @@ async function getProducts(req, res) {
     }
 }
 
+/**
+ * 2. ฟังก์ชันใหม่ (Weekend Work): ดึงข้อมูลแบบมี Gatekeeper คัดกรอง Category
+ */
+async function getProductsByCategory(req, res) {
+    try {
+        // แกะซองจดหมายเพื่อดึงค่า Query Parameter
+        const requestedCategory = req.query.category;
+
+        // Gatekeeper: ตรวจสอบความถูกต้องของข้อมูล
+        if (!requestedCategory || requestedCategory.trim() === '') {
+            return res.status(400).json({
+                status: "fail",
+                message: "Gatekeeper alert: Missing or invalid category parameter."
+            });
+        }
+
+        // Processing: ดึงข้อมูลและคัดกรอง
+        const allProducts = await productService.getAllProducts();
+        const filteredProducts = allProducts.filter(
+            product => product.category.toLowerCase() === requestedCategory.toLowerCase()
+        );
+
+        // Response: ส่งข้อมูลกลับ
+        res.status(200).json({
+            status: "success",
+            results: filteredProducts.length,
+            data: filteredProducts
+        });
+
+    } catch (error) {
+        console.error("Error Processing Request:", error);
+        res.status(500).json({
+            status: "fail",
+            message: "Internal Server Error during processing."
+        });
+    }
+}
+
 module.exports = {
-    getProducts
+    getProducts,
+    getProductsByCategory
 };

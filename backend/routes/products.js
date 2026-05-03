@@ -3,8 +3,12 @@ const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
 
-// เมื่อมี GET Request เข้ามาที่ '/' ของ Route นี้ 
-// ให้ส่งงานต่อให้ฟังก์ชัน getProducts ใน Controller ทำงาน
+// 1. Route สำหรับค้นหาตามหมวดหมู่ (Gatekeeper)
+// เมื่อมีคนยิง GET มาที่ /api/products/category?category=...
+router.get('/category', productController.getProductsByCategory);
+
+// 2. Route ดั้งเดิม สำหรับดึงสินค้าทั้งหมด
+// เมื่อมีคนยิง GET มาที่ /api/products เฉยๆ
 router.get('/', productController.getProducts);
 
 module.exports = router;
