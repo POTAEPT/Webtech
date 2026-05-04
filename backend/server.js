@@ -6,6 +6,7 @@ const PORT = 3000;
 
 // นำเข้า Routes
 const productRoutes = require('./routes/products');
+const authRoutes = require('./routes/auth')
 
 app.use(cors());
 
@@ -15,6 +16,7 @@ app.use(express.json());
 // ประกาศใช้งาน Routing
 // หมายความว่า URL อะไรก็ตามที่ขึ้นต้นด้วย '/api/products' จะถูกส่งไปให้ productRoutes จัดการ
 app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
 
 // ทดสอบยิงหน้า Root ของเซิร์ฟเวอร์
 app.get('/', (req, res) => {
