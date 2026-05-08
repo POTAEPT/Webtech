@@ -1,59 +1,69 @@
 [
   {
+    "id": 1,
     "username": "john.doe@example.com",
     "password": "$2b$12$bhs/yJ0H9KdT3VoyV0fb6.3kDCTkZH6SgTQvmw8DKT65hX0Yi8wOW",
     "first_name": "John",
     "date_of_registration": "2023-01-15T08:30:00Z"
   },
   {
+    "id": 2,
     "username": "jane.smith@example.com",
     "password": "$2b$12$3MEM4AjeN4eEM8/02xpDw.0cPYARaOnRlvrRraRn4MXQ9ExH7UQaS",
     "first_name": "Jane",
     "date_of_registration": "2023-02-14T09:30:00Z"
   },
   {
+    "id": 3,
     "username": "alice.w@example.com",
     "password": "$2b$12$01QHezhr9oKINxULg213V.1TjqpWzaQmrhPyAI2zP.JDVIArkaYUC",
     "first_name": "Alice",
     "date_of_registration": "2023-03-16T10:30:00Z"
   },
   {
+    "id": 4,
     "username": "bob.builder@example.com",
     "password": "$2b$12$YpxgKtuSIZa80R.EWZzhVOHA/FTTIf0BZVjKaThZz0jYZO0ZK8gUq",
     "first_name": "Bob",
     "date_of_registration": "2023-04-15T11:30:00Z"
   },
   {
+    "id": 5,
     "username": "charlie.c@example.com",
     "password": "$2b$12$uHbZQBzNEwTJfHio0eAoEeY.wteXInNK8.yiW8SrB8Z3wcMncgajm",
     "first_name": "Charlie",
     "date_of_registration": "2023-05-15T12:30:00Z"
   },
   {
+    "id": 6,
     "username": "diana.p@example.com",
     "password": "$2b$12$wGpfVK7xruCje/y0eVKdtuuxvCFvsUe8U.wFIwQVEPm4JF0XulHgq",
     "first_name": "Diana",
     "date_of_registration": "2023-06-14T13:30:00Z"
   },
   {
+    "id": 7,
     "username": "evan.d@example.com",
     "password": "$2b$12$ARFOtyKtUxhnwqIStLf7X.BcMCdlfm..snIISF9LU2w860yQ7qnze",
     "first_name": "Evan",
     "date_of_registration": "2023-07-14T14:30:00Z"
   },
   {
+    "id": 8,
     "username": "fiona.s@example.com",
     "password": "$2b$12$gUpP7PZvCkJI3jhZ06RCwuFMIP5PG5NNLjY0rubzgFa3xXve13Mzm",
     "first_name": "Fiona",
     "date_of_registration": "2023-08-13T15:30:00Z"
   },
   {
+    "id": 9,
     "username": "george.k@example.com",
     "password": "$2b$12$1zHA2AGI9R8wE8PKxiqEAOpaE3zrmt/WbgTk9.LyIBu7X5kHw1.G2",
     "first_name": "George",
     "date_of_registration": "2023-09-12T16:30:00Z"
   },
   {
+    "id": 10,
     "username": "hannah.m@example.com",
     "password": "$2b$12$iiR4l1cGxbzRYybghMd0AO6Wv6654YyAPelZVV4Owq79gMZWnbbD.",
     "first_name": "Hannah",

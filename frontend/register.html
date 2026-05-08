@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register System</title>
+
+    <link rel="stylesheet" href="/frontend/css/form.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container"> 
+        <h2>สร้างบัญชีใหม่</h2>
+        <!-- กำหนด id="registerForm" เพื่อให้ JS ดักจับ Event Submit ได้ -->
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Email (Username):</label>
+                <input type="email" id="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+                <!-- กล่องข้อความแจ้งเตือน จะถูกเรียกให้แสดงผลผ่าน JS -->
+                <div id="passwordError" class="error-message">
+                    รหัสผ่านต้องยาว 8 ตัวอักษรขึ้นไป, มีตัวพิมพ์ใหญ่ 1 ตัว และอักขระพิเศษ 1 ตัว
+                </div>
+            </div>
+            
+            <button type="submit">สมัครสมาชิก</button>
+        </form>
+    </div>
+
+    <!-- ลิงก์ไฟล์ JavaScript ให้ทำงานหลังจากโหลด HTML เสร็จ -->
+    <script src="/frontend//js/regis.js"></script>
+</body>
+</html>

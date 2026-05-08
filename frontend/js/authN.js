@@ -1,32 +1,47 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // อ้างอิงถึง Element ต่างๆ บนหน้าเว็บ
-    const loginBtn = document.getElementById('loginBtn');
-    const welcomeArea = document.getElementById('welcomeArea');
+    // 1. อ้างอิงถึง Group และ Element ต่างๆ
+    const guestGroup = document.getElementById('guestGroup');
+    const userGroup = document.getElementById('userGroup');
     const displayUsername = document.getElementById('displayUsername');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // 🛡️ Logic ใหม่: ตรวจสอบหา JWT Token จาก LocalStorage
+    // 2. ตรวจสอบสถานะจาก Token ใน LocalStorage
     const token = localStorage.getItem('amado_token');
     const displayName = localStorage.getItem('displayName');
 
+    // 3. Logic การสลับการแสดงผล (State Management)
     if (token) {
-        // หากมี Token ถือว่าล็อกอินแล้ว: ซ่อนปุ่ม Login โชว์ข้อความทักทาย
-        if (loginBtn) loginBtn.style.display = 'none';
-        if (welcomeArea) {
-            welcomeArea.style.display = 'inline-block';
-            displayUsername.innerText = displayName;
+        // กรณี: ล็อคอินแล้ว
+        // - ซ่อนปุ่ม Login/Register
+        if (guestGroup) guestGroup.style.display = 'none';
+        
+        // - แสดงข้อความต้อนรับและปุ่ม Logout
+        if (userGroup) {
+            userGroup.style.display = 'block'; // หรือ 'flex', 'inline-block' ตามโครงสร้าง CSS
+            if (displayUsername) {
+                // เอาชื่อที่เก็บไว้มาใส่ใน HTML
+                displayUsername.innerText = displayName || 'User'; 
+            }
         }
-    } 
+    } else {
+        // กรณี: ยังไม่ล็อคอิน (หรือไม่มี Token)
+        // - แสดงปุ่ม Login/Register ตามปกติ
+        if (guestGroup) guestGroup.style.display = 'block';
+        
+        // - ซ่อนกล่องข้อความต้อนรับและปุ่ม Logout
+        if (userGroup) userGroup.style.display = 'none';
+    }
 
-    // ดักจับการกดปุ่ม Logout
+    // 4. ผูก Event ให้กับปุ่ม Logout
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            // ทำลายบัตรผ่าน (Token) และข้อมูลทิ้ง
+            // ทำลาย Token และข้อมูลผู้ใช้ทิ้ง
             localStorage.removeItem('amado_token');
             localStorage.removeItem('displayName');
             
-            // รีเฟรชหน้าต่างปัจจุบัน เพื่อเคลียร์หน้าจอและกลับสู่สถานะยังไม่ล็อกอิน
-            window.location.reload();
+            // นำผู้ใช้กลับไปหน้า Login หรือรีเฟรชหน้าเว็บ
+            // ในที่นี้ นัทให้ Redirect ไปหน้า Login เพื่อความชัวร์ว่าออกจากระบบจริง
+            window.location.href = 'login.html'; 
         });
     }
 });

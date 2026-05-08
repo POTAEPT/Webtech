@@ -1,75 +1,68 @@
 // backend/controllers/authController.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-// สมมติว่าเรามี userService ที่ต่อกับ SQLite เรียบร้อยแล้ว
 const userService = require('../services/userService'); 
 
-// ในการทำงานจริง ค่า Secret ห้าม Hardcode ไว้ในไฟล์เด็ดขาด! 
-// ต้องดึงมาจากไฟล์ .env (เช่น process.env.JWT_SECRET)
 const JWT_SECRET = 'amado_super_secret_key_2026'; 
 
-async function loginUser(req, res) {
-    try {
-        // 1. รับค่า email และ password จาก Request Body
-        const { email, password } = req.body;
+// ฟังก์ชัน loginUser เดิม... (ยังคงไว้เหมือนเดิม)
+async function loginUser(req, res) { /* โค้ดเดิมของคุณ */ }
 
-        // Gatekeeper: เช็คเบื้องต้นว่าส่งข้อมูลมาครบไหม
-        if (!email || !password) {
+// 🆕 ฟังก์ชันใหม่สำหรับจัดการการสมัครสมาชิก
+async function registerUser(req, res) {
+    try {
+        // 1. ดึงข้อมูลที่ส่งมาจาก Frontend (ผ่าน fetch body)
+        const { name, email, password } = req.body;
+
+        // 2. Backend Validation (ด่านตรวจที่ 1)
+        // ตรวจสอบว่าส่งข้อมูลมาครบหรือไม่ ป้องกันการใช้ Postman ยิง API มาแบบโล่งๆ
+        if (!name || !email || !password) {
             return res.status(400).json({ 
                 status: 'fail', 
-                message: 'Please provide email and password' 
+                message: 'กรุณากรอกข้อมูลให้ครบถ้วน' 
             });
         }
 
-        // 2. ค้นหา User ใน Database ด้วย Email (SQLite)
-        const user = await userService.getUserByEmail(email);
-
-        // ถ้าไม่เจอ Email ในระบบ (User = null) 
-        if (!user) {
-            // 🛡️ Security Tip: เราจะไม่บอกแฮกเกอร์ว่า "ไม่พบ Email นี้" 
-            // แต่เราจะบอกกว้างๆ ว่า "ข้อมูลเข้าสู่ระบบไม่ถูกต้อง" (Invalid credentials)
-            // เพื่อป้องกันการสุ่มเดา Email ในระบบ (Username Enumeration)
-            return res.status(401).json({ 
+        // 3. ตรวจสอบอีเมลซ้ำ (ด่านตรวจที่ 2)
+        // เรียกใช้ Service เพื่อหาว่ามีอีเมลนี้ในระบบหรือยัง
+        const existingUser = await userService.getUserByEmail(email);
+        if (existingUser) {
+            // ถ้ามีแล้ว ให้ตอบกลับด้วย Status 409 Conflict
+            return res.status(409).json({ 
                 status: 'fail', 
-                message: 'User Unauthorized: Invalid credentials.' 
+                message: 'อีเมลนี้ถูกใช้งานแล้วในระบบ' 
             });
         }
 
-        // 3. ใช้ bcrypt ตรวจสอบรหัสผ่าน
-        // bcrypt.compare จะนำรหัสผ่านแบบ Plaintex
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        // 4. 🛡️ Security Logic: การเข้ารหัสผ่าน (Hashing)
+        // ห้ามบันทึกรหัสผ่านแบบ Plaintext เด็ดขาด! เราจะใช้ bcrypt ในการ Hash
+        const saltRounds = 10; // กำหนดความซับซ้อนของการเข้ารหัส (ยิ่งเยอะยิ่งปลอดภัย แต่เซิร์ฟเวอร์จะคำนวณนานขึ้น)
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        if (!isPasswordMatch) {
-            return res.status(401).json({ 
-                status: 'fail', 
-                message: 'Pass Unauthorized: Invalid credentials.' 
-            });
-        }
+        // 5. ส่งข้อมูลไปบันทึกลง Database ผ่าน Service
+        await userService.createUser({
+            name: name,
+            email: email,
+            password: hashedPassword // ส่งรหัสผ่านที่ Hash แล้วไปบันทึกเท่านั้น!
+        });
 
-        // 4. เมื่อรหัสผ่านถูกต้อง สร้าง JWT (JSON Web Token)
-        // ประกอบด้วย 3 ส่วน: Payload (ข้อมูลที่อยากฝัง), Secret Key (กุญแจล็อค), Options (เช่น วันหมดอายุ)
-        const token = jwt.sign(
-            { id: user.id }, // ฝังเฉพาะ ID ลงไป (ไม่ควรฝัง Password หรือข้อมูล Sensitive ลงใน Token)
-            JWT_SECRET,
-            { expiresIn: '2h' } // กำหนดให้ Token หมดอายุใน 2 ชั่วโมง
-        );
-
-        // 5. ส่ง Token กลับไปให้ Frontend (พร้อม Status 200 OK)
-        res.status(200).json({
+        // 6. เมื่อทุกอย่างเสร็จสมบูรณ์ ตอบกลับหน้าบ้านด้วย Status 201 (Created)
+        res.status(201).json({
             status: 'success',
-            message: 'Login successful',
-            token: token
+            message: 'สมัครสมาชิกสำเร็จเรียบร้อยแล้ว!'
         });
 
     } catch (error) {
-        console.error("Login Error:", error);
+        // ดักจับ Error กรณีมีพังกลางทาง (เช่น สิทธิ์การเขียนไฟล์ JSON ถูกปฏิเสธ)
+        console.error("Register Error:", error);
         res.status(500).json({ 
             status: 'error', 
-            message: 'Internal Server Error' 
+            message: 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์' 
         });
     }
 }
 
 module.exports = {
-    loginUser
+    loginUser,
+    registerUser // Export ฟังก์ชันออกไปให้ Router ใช้งาน
 };

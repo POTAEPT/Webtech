@@ -8,5 +8,7 @@ const authController = require('../controllers/authController');
 // 💡 Logic สำคัญ: ตรงนี้ต้องใช้ .post() นะครับ เพราะเราส่งข้อมูลแบบ POST 
 router.post('/login', authController.loginUser);
 
+router.post('/register', authController.registerUser);
+
 // ส่งออก router ไปให้ server.js ใช้งาน
 module.exports = router;

@@ -67,6 +67,20 @@
             </div>
             <!-- Amado Nav -->
             <nav class="amado-nav">
+                <!-- พื้นที่สำหรับจัดการ Authentication -->
+                <div id="authMenu" class="auth-menu">
+                    <!-- กลุ่มปุ่มที่ 1: แสดงตอน "ยังไม่ล็อคอิน" -->
+                    <div id="guestGroup">
+                        <a href="login.html" id="loginBtn" class="btn btn-primary">Login</a>
+                        <a href="register.html" id="registerBtn" class="btn btn-secondary">Register</a>
+                    </div>
+                
+                    <!-- กลุ่มปุ่มที่ 2: แสดงตอน "ล็อคอินแล้ว" (ซ่อนไว้เป็นค่าเริ่มต้น) -->
+                    <div id="userGroup" style="display: none;">
+                        <span id="welcomeArea">ยินดีต้อนรับ, <strong id="displayUsername"></strong></span>
+                        <button id="logoutBtn" class="btn btn-danger">Logout</button>
+                    </div>
+                </div>
                 <ul>
                     <li class="active"><a href="index.html">Home</a></li>
                     <li><a href="shop.html">Shop</a></li>
@@ -85,16 +99,6 @@
                 <a href="cart.html" class="cart-nav"><img src="img/core-img/cart.png" alt=""> Cart <span>(0)</span></a>
                 <a href="#" class="fav-nav"><img src="img/core-img/favorites.png" alt=""> Favourite</a>
                 <a href="#" class="search-nav"><img src="img/core-img/search.png" alt=""> Search</a>
-            <div class="user-auth-area">
-                <!-- ปุ่มนี้จะโชว์ตอนยังไม่ล็อกอิน -->
-                <a href="/frontend/login.html" id="loginBtn" class="btn">Login</a>
-
-                <!-- ส่วนนี้จะโชว์ตอนล็อกอินแล้ว -->
-                <span id="welcomeArea" style="display: none;">
-                    สวัสดี, <span id="displayUsername"></span>
-                    <button id="logoutBtn" class="btn">Logout</button>
-                </span>
-            </div>
             </div>
             <!-- Social Button -->
             <div class="social-info d-flex justify-content-between">
@@ -320,7 +324,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <!-- Active js -->
     <script src="js/active.js"></script>
 
-        <script src="js/cartService.js"></script>
+    <script src="js/cartService.js"></script>
+
+    <script src=js/authN.js></script>
 
 </body>
 
