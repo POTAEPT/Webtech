@@ -25,44 +25,34 @@
     </div>
 
 <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // ป้องกันหน้าเว็บรีเฟรชตอนกด Submit
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
 
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+        try {
+            // แก้ไข URL ให้มี /auth/ และแก้ Body ให้ส่ง username แทน email
+            const response = await fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass }) // เปลี่ยนตรงนี้ครับ
+            });
 
-            try {
-                // 1. ยิง Request ไปที่ Backend Controller ของเรา
-                const response = await fetch('http://localhost:3000/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email: user, password: pass })
-                });
+            const data = await response.json();
 
-                // แปลงผลลัพธ์ที่ตอบกลับมาจาก Backend ให้เป็น JSON
-                const data = await response.json();
-
-                // 2. เช็ค Status Code ถ้า 200 OK แปลว่า Login สำเร็จ
-                if (response.ok) {
-                    // 3. เก็บ JWT Token ลงใน LocalStorage แทนการใช้แค่ค่า true
-                    localStorage.setItem('amado_token', data.token);
-                    
-                    // เก็บชื่ออีเมลไว้แสดงผลบน Navbar ชั่วคราว
-                    localStorage.setItem('displayName', user); 
-                    
-                    // 4. พากลับไปหน้าหลัก
-                    window.location.href = 'index.html'; 
-                } else {
-                    // ถ้ารหัสผิด Backend จะส่ง message กลับมา (เช่น Invalid credentials.)
-                    document.getElementById('errorMessage').innerText = data.message;
-                }
-            } catch (err) {
-                console.error("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้:", err);
-                document.getElementById('errorMessage').innerText = "เซิร์ฟเวอร์หลังบ้านไม่ตอบสนอง";
+            if (response.ok) {
+                // เก็บ Token และชื่อเพื่อใช้ใน authN.js
+                localStorage.setItem('amado_token', data.token);
+                localStorage.setItem('displayName', data.user.first_name); 
+                window.location.href = 'index.html'; 
+            } else {
+                document.getElementById('errorMessage').innerText = data.message || "ล็อกอินไม่สำเร็จ";
             }
-        });
-    </script>
+        } catch (err) {
+            console.error("Connection Error:", err);
+            document.getElementById('errorMessage').innerText = "เซิร์ฟเวอร์ไม่ตอบสนอง";
+        }
+    });
+</script>
 </body>
 </html>

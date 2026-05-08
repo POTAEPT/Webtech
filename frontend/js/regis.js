@@ -37,31 +37,29 @@ const payload = {
 };
 
     // 7. กระบวนการส่งข้อมูลไปยัง Backend
+    // 7. กระบวนการส่งข้อมูลไปยัง Backend
     try {
-        // ใช้ await เพื่อรอให้ fetch ทำงานเสร็จสมบูรณ์
-        const response = await fetch('/api/register', {
+        // ❌ ของเดิม: const response = await fetch('/api/register', {
+        
+        // ✅ เปลี่ยนเป็นบรรทัดนี้ครับ:
+        const response = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST', 
             headers: {
-                // แจ้ง Backend ว่าข้อมูลที่ส่งไป (Body) เป็นรูปแบบ JSON
                 'Content-Type': 'application/json' 
             },
-            // ใช้ JSON.stringify() เพื่อแปลง Object ของ JS เป็นสตริง JSON ก่อนส่งข้ามเครือข่าย
             body: JSON.stringify(payload) 
         });
 
-        // 8. ตรวจสอบผลลัพธ์ที่ Backend ตอบกลับมา (HTTP Status Code 200-299 ถือว่า ok)
         if (response.ok) {
-            // กรณี Backend ตอบกลับว่าสร้างบัญชีสำเร็จ
-            const responseData = await response.json(); // สมมติว่า Backend คืนค่า JSON กลับมาด้วย
-            console.log('Success:', responseData);
+            const responseData = await response.json(); 
             alert('สมัครสมาชิกสำเร็จ!');
-            registerForm.reset(); // ล้างฟอร์มให้เป็นหน้าว่าง
+            registerForm.reset(); 
+            // แนะนำเพิ่มเติม: สมัครเสร็จแล้วให้เด้งไปหน้าล็อกอินเลย
+            window.location.href = 'login.html';
         } else {
-            // กรณี Backend ตอบกลับมาว่ามี Error (เช่น อีเมลซ้ำในระบบ)
-            alert('ไม่สามารถสมัครสมาชิกได้ โปรดตรวจสอบข้อมูลอีกครั้ง');
+            alert('ไม่สามารถสมัครสมาชิกได้ อาจจะมี Username นี้ในระบบแล้ว');
         }
     } catch (error) {
-        // 9. ส่วน catch ดักจับ Error กรณีเกิดปัญหากับเครือข่าย เช่น เน็ตหลุด หรือ Backend ล่ม
         console.error('Network Error:', error);
         alert('ระบบมีปัญหาขัดข้อง ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
     }

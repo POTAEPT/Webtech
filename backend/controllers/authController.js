@@ -1,68 +1,54 @@
-// backend/controllers/authController.js
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const userService = require('../services/userService'); 
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-const JWT_SECRET = 'amado_super_secret_key_2026'; 
+const dbPath = path.resolve(__dirname, '../data/store.db');
+const db = new sqlite3.Database(dbPath);
+const JWT_SECRET = 'amado_super_secret_key_2026';
 
-// ฟังก์ชัน loginUser เดิม... (ยังคงไว้เหมือนเดิม)
-async function loginUser(req, res) { /* โค้ดเดิมของคุณ */ }
+// --- ฟังก์ชันล็อกอิน ---
+async function loginUser(req, res) {
+    const { username, password } = req.body; // รับเป็น username ตามหน้าบ้าน
 
-// 🆕 ฟังก์ชันใหม่สำหรับจัดการการสมัครสมาชิก
+    const sql = `SELECT * FROM USERS WHERE username = ?`;
+    db.get(sql, [username], async (err, user) => {
+        if (err || !user) {
+            return res.status(401).json({ message: 'ไม่พบผู้ใช้งานหรือรหัสผ่านผิด' });
+        }
+
+        // เช็ครหัสผ่านที่เข้ารหัสไว้
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
+        }
+
+        // สร้าง Token
+        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1d' });
+        res.json({ status: 'success', token, user: { first_name: user.first_name } });
+    });
+}
+
+// --- ฟังก์ชันลงทะเบียน ---
 async function registerUser(req, res) {
+    const { username, password, first_name } = req.body;
+    
     try {
-        // 1. ดึงข้อมูลที่ส่งมาจาก Frontend (ผ่าน fetch body)
-        const { name, email, password } = req.body;
-
-        // 2. Backend Validation (ด่านตรวจที่ 1)
-        // ตรวจสอบว่าส่งข้อมูลมาครบหรือไม่ ป้องกันการใช้ Postman ยิง API มาแบบโล่งๆ
-        if (!name || !email || !password) {
-            return res.status(400).json({ 
-                status: 'fail', 
-                message: 'กรุณากรอกข้อมูลให้ครบถ้วน' 
-            });
-        }
-
-        // 3. ตรวจสอบอีเมลซ้ำ (ด่านตรวจที่ 2)
-        // เรียกใช้ Service เพื่อหาว่ามีอีเมลนี้ในระบบหรือยัง
-        const existingUser = await userService.getUserByEmail(email);
-        if (existingUser) {
-            // ถ้ามีแล้ว ให้ตอบกลับด้วย Status 409 Conflict
-            return res.status(409).json({ 
-                status: 'fail', 
-                message: 'อีเมลนี้ถูกใช้งานแล้วในระบบ' 
-            });
-        }
-
-        // 4. 🛡️ Security Logic: การเข้ารหัสผ่าน (Hashing)
-        // ห้ามบันทึกรหัสผ่านแบบ Plaintext เด็ดขาด! เราจะใช้ bcrypt ในการ Hash
-        const saltRounds = 10; // กำหนดความซับซ้อนของการเข้ารหัส (ยิ่งเยอะยิ่งปลอดภัย แต่เซิร์ฟเวอร์จะคำนวณนานขึ้น)
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-        // 5. ส่งข้อมูลไปบันทึกลง Database ผ่าน Service
-        await userService.createUser({
-            name: name,
-            email: email,
-            password: hashedPassword // ส่งรหัสผ่านที่ Hash แล้วไปบันทึกเท่านั้น!
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const sql = `INSERT INTO USERS (username, password, first_name) VALUES (?, ?, ?)`;
+        
+        db.run(sql, [username, hashedPassword, first_name], function(err) {
+            if (err) {
+                // 🚨 เพิ่มบรรทัดนี้เพื่อสั่งปริ้นท์ Error ตัวจริงออกทาง Terminal
+                console.error("❌ Database Error สาเหตุคือ:", err.message);
+                return res.status(400).json({ message: 'เกิดข้อผิดพลาดที่ DB' });
+            }
+            res.status(201).json({ status: 'success', message: 'สมัครสมาชิกสำเร็จ!' });
         });
-
-        // 6. เมื่อทุกอย่างเสร็จสมบูรณ์ ตอบกลับหน้าบ้านด้วย Status 201 (Created)
-        res.status(201).json({
-            status: 'success',
-            message: 'สมัครสมาชิกสำเร็จเรียบร้อยแล้ว!'
-        });
-
     } catch (error) {
-        // ดักจับ Error กรณีมีพังกลางทาง (เช่น สิทธิ์การเขียนไฟล์ JSON ถูกปฏิเสธ)
-        console.error("Register Error:", error);
-        res.status(500).json({ 
-            status: 'error', 
-            message: 'เกิดข้อผิดพลาดที่เซิร์ฟเวอร์' 
-        });
+        console.error("❌ Server Error สาเหตุคือ:", error);
+        res.status(500).json({ message: 'Server Error' });
     }
 }
 
-module.exports = {
-    loginUser,
-    registerUser // Export ฟังก์ชันออกไปให้ Router ใช้งาน
-};
+module.exports = { loginUser, registerUser };
