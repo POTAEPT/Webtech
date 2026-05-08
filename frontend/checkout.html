@@ -76,6 +76,16 @@
                     <li class="active"><a href="checkout.html">Checkout</a></li>
                 </ul>
             </nav>
+            <div class="auth-container mt-30 mb-100">
+                <div id="guestGroup">
+                    <a href="login.html" class="btn amado-btn mb-15">Login</a>
+                    <a href="register.html" class="btn amado-btn active">Register</a>
+                </div>
+                <div id="userGroup" style="display: none;">
+                    <p class="mb-15" style="font-weight: bold;">Welcome, <span id="displayUsername">User</span>!</p>
+                    <button id="logoutBtn" class="btn amado-btn active w-100">Logout</button>
+                </div>
+            </div>
             <!-- Button Group -->
             <div class="amado-btn-group mt-30 mb-100">
                 <a href="#" class="btn amado-btn mb-15">%Discount%</a>
@@ -167,9 +177,9 @@
                         <div class="cart-summary">
                             <h5>Cart Total</h5>
                             <ul class="summary-table">
-                                <li><span>subtotal:</span> <span>$140.00</span></li>
+                                <li><span>subtotal:</span> <span id="checkoutSubtotal">$0.00</span></li>
                                 <li><span>delivery:</span> <span>Free</span></li>
-                                <li><span>total:</span> <span>$140.00</span></li>
+                                <li><span>total:</span> <span id="checkoutTotal">$0.00</span></li>
                             </ul>
 
                             <div class="payment-method">
@@ -186,7 +196,7 @@
                             </div>
 
                             <div class="cart-btn mt-100">
-                                <a href="#" class="btn amado-btn w-100">Checkout</a>
+                                <button type="button" id="placeOrderBtn" class="btn amado-btn w-100">Place Order</button>
                             </div>
                         </div>
                     </div>
@@ -283,6 +293,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="js/plugins.js"></script>
     <!-- Active js -->
     <script src="js/active.js"></script>
+
+    <script src="js/cartService.js"></script>
+    <script src="js/checkout.js"></script>
+    <script src="js/authN.js"></script>
 
 </body>
 

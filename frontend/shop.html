@@ -65,6 +65,16 @@
                     <li><a href="checkout.html">Checkout</a></li>
                 </ul>
             </nav>
+            <div class="auth-container mt-30 mb-100">
+                <div id="guestGroup">
+                    <a href="login.html" class="btn amado-btn mb-15">Login</a>
+                    <a href="register.html" class="btn amado-btn active">Register</a>
+                </div>
+                <div id="userGroup" style="display: none;">
+                    <p class="mb-15" style="font-weight: bold;">Welcome, <span id="displayUsername">User</span>!</p>
+                    <button id="logoutBtn" class="btn amado-btn active w-100">Logout</button>
+                </div>
+            </div>
             <div class="amado-btn-group mt-30 mb-100">
                 <a href="#" class="btn amado-btn mb-15">%Discount%</a>
                 <a href="#" class="btn amado-btn active">New this week</a>
@@ -308,14 +318,16 @@
                     <div class="col-12 col-sm-6 col-md-12 col-xl-6">
                         <div class="single-product-wrapper">
                             <div class="product-img">
-                                <img src="${product.mainImage}" alt="${product.name}">
-                                <img class="hover-img" src="${product.hoverImage}" alt="${product.name} Hover">
+                                <a href="product-details.html?id=${product.id}">
+                                    <img src="${product.mainImage}" alt="${product.name}">
+                                    <img class="hover-img" src="${product.hoverImage}" alt="${product.name} Hover">
+                                </a>
                             </div>
                             <div class="product-description d-flex align-items-center justify-content-between">
                                 <div class="product-meta-data">
                                     <div class="line"></div>
                                     <p class="product-price">$${product.price}</p>
-                                    <a href="${product.productUrl}">
+                                    <a href="product-details.html?id=${product.id}">
                                         <h6>${product.name}</h6>
                                     </a>
                                 </div>
@@ -371,6 +383,7 @@
 
     <!-- เรียกใช้งาน Cart Logic แยกต่างหาก (Single Responsibility) -->
     <script src="js/cartService.js"></script>
+    <script src="js/authN.js"></script>
 
 </body>
 </html>
