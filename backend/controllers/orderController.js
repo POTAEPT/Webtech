@@ -1,19 +1,20 @@
+// backend/controllers/orderController.js
 const orderService = require('../services/orderService');
 
-// ฟังก์ชันสร้างคำสั่งซื้อ
 exports.createOrder = async (req, res) => {
-    const { user_id, product_id, quantity, total_price } = req.body;
+    // ❌ ตัด user_id ออกจาก req.body เพราะไม่ไว้ใจหน้าบ้าน
+    const { product_id, quantity } = req.body;
+    
+    // ✅ ดึง user_id มาจาก Token ที่ผ่านการตรวจสอบแล้วแทน ปลอดภัย 100%
+    const user_id = req.user.id; 
 
-    // 1. Validation เช็คว่าข้อมูลมาครบไหม (Controller's job)
-    if (!user_id || !product_id || !quantity || !total_price) {
+    if (!product_id || !quantity) {
         return res.status(400).json({ error: "ส่งข้อมูลมาไม่ครบถ้วน กรุณาตรวจสอบ" });
     }
 
     try {
-        // 2. เรียกใช้งาน Service แทนการเขียน SQL โดยตรง
-        const newOrderId = await orderService.processOrder(user_id, product_id, quantity, total_price);
+        const newOrderId = await orderService.processOrder(user_id, product_id, quantity);
 
-        // 3. Response
         res.status(201).json({ 
             message: "✅ บันทึกคำสั่งซื้อเรียบร้อยแล้ว!", 
             order_id: newOrderId 

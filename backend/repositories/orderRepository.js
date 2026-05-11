@@ -2,9 +2,28 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 // เชื่อมต่อ Database
-const dbPath = path.resolve(__dirname, '../data/store.db');
+const dbPath = path.resolve(__dirname, '../data/orders.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error("❌ orderRepository: เชื่อมต่อ DB ล้มเหลว:", err.message);
+});
+
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS ORDERS (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT,
+            total_amount REAL
+        )
+    `);
+    db.run(`
+        CREATE TABLE IF NOT EXISTS ORDER_ITEMS (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_id INTEGER,
+            product_id TEXT,
+            quantity INTEGER,
+            unit_price REAL
+        )
+    `);
 });
 
 class OrderRepository {

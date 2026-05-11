@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+"scripts": {
+    "start:product": "node product-server.js",
+    "start:order": "node order-server.js",
+    "start:gateway": "node gateway.js",
+    "dev": "concurrently -c \"cyan,magenta,yellow\" -n \"PRODUCT,ORDER,GATEWAY\" \"npm run start:product\" \"npm run start:order\" \"npm run start:gateway\""
   },
   "repository": {
     "type": "git",
@@ -24,10 +25,12 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "http-proxy-middleware": "^4.0.0",
     "jsonwebtoken": "^9.0.3",
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.14"
   }
 }

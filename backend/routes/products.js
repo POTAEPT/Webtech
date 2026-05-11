@@ -11,4 +11,7 @@ router.get('/category', productController.getProductsByCategory);
 // เมื่อมีคนยิง GET มาที่ /api/products เฉยๆ
 router.get('/', productController.getProducts);
 
+// 3. Route สำหรับลดจำนวนสินค้าในสต็อก
+router.patch('/:id/reduce-stock', productController.reduceProductStock);
+
 module.exports = router;

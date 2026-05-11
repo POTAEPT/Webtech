@@ -55,7 +55,27 @@ async function getProductsByCategory(req, res) {
     }
 }
 
+/**
+ * 3. ลดจำนวนสินค้าในสต็อก
+ */
+async function reduceProductStock(req, res) {
+    try {
+        const { id } = req.params;
+        const { quantity } = req.body;
+
+        const updatedProduct = await productService.reduceStock(id, quantity);
+        res.status(200).json(updatedProduct);
+    } catch (error) {
+        console.error("Error in reduceProductStock controller:", error.message);
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
 module.exports = {
     getProducts,
-    getProductsByCategory
+    getProductsByCategory,
+    reduceProductStock
 };

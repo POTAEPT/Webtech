@@ -20,7 +20,35 @@ async function getAllProducts() {
     }
 }
 
+/**
+ * ลดจำนวนสินค้าในสต็อก
+ */
+async function reduceStock(productId, quantity) {
+    const data = await fs.readFile(dataFilePath, 'utf8');
+    const products = JSON.parse(data);
+
+    const product = products.find((item) => item.id === productId || item.name === productId);
+    if (!product) {
+        throw new Error('Product not found');
+    }
+
+    if (typeof product.stock !== 'number') {
+        product.stock = 100;
+    }
+
+    const nextStock = product.stock - quantity;
+    if (nextStock < 0) {
+        throw new Error('Insufficient stock');
+    }
+
+    product.stock = nextStock;
+
+    await fs.writeFile(dataFilePath, JSON.stringify(products, null, 2));
+    return product;
+}
+
 // นำออก (Export) ฟังก์ชันไปให้ Controller ใช้งาน
 module.exports = {
-    getAllProducts
+    getAllProducts,
+    reduceStock
 };
